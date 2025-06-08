@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import LogoutButton from "./LogoutButton";
 
 const InputForm = () => {
   const [formData, setFormData] = useState({
@@ -200,6 +201,7 @@ const InputForm = () => {
             Subomi Ibukun
           </a>
         </footer>
+        <LogoutButton />
       </div>
     </div>
   );

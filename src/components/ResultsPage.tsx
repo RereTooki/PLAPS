@@ -3,6 +3,7 @@ import axios from "axios";
 import PredictionChart from "../components/PredictionChart";
 import SuggestionBox from "../components/SuggestionBox";
 import { useNavigate } from "react-router-dom";
+import LogoutButton from "./LogoutButton";
 
 interface Course {
   course_name: string;
