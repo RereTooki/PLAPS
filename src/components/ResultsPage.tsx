@@ -160,6 +160,7 @@ const Results = () => {
           Subomi Ibukun
         </a>
       </footer>
+      <LogoutButton />
     </div>
   );
 };

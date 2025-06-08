@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import LogoutButton from "./LogoutButton";
 
 interface Resource {
   title: string;
@@ -190,6 +191,7 @@ const Dashboard = () => {
           Subomi Ibukun
         </a>
       </footer>
+      <LogoutButton />
     </div>
   );
 };

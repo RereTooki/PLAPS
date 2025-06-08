@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import LogoutButton from "./LogoutButton";
 
 interface Course {
   course_name: string;
@@ -183,6 +184,7 @@ const LearningResources = () => {
           Subomi Ibukun
         </a>
       </footer>
+      <LogoutButton />
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React from "react";
 import "../App.css";
-import AuthPage from "./AuthPage";
 import { Link } from "react-router-dom";
 
 const Homepage = () => {
