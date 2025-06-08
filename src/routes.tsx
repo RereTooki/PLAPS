@@ -17,10 +17,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Homepage />,
   },
-  {
-    path: "/auth",
-    element: <AuthPage />,
-  },
+
   {
     path: "/login",
     element: <LoginForm />,
@@ -29,10 +26,7 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <RegisterForm />,
   },
-  {
-    path: "/auth",
-    element: <AuthPage />,
-  },
+
   {
     path: "/dashboard",
     element: (
