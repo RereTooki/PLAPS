@@ -42,7 +42,7 @@ const Dashboard = () => {
       try {
         const userId = localStorage.getItem("user_id");
         if (!userId) {
-          navigate("/auth");
+          navigate("/login");
           return;
         }
 
