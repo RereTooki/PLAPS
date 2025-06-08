@@ -15,8 +15,8 @@ const Test = () => {
 
   const learningTypeMapping: Record<string, number> = {
     Visual: 0,
-    Auditory: 1,
-    Kinesthetic: 2,
+    Textual: 1,
+    Interactive: 2,
   };
 
   const handleChange = (
@@ -173,8 +173,8 @@ const Test = () => {
                 >
                   <option value="">Select</option>
                   <option value="Visual">Visual</option>
-                  <option value="Auditory">Auditory</option>
-                  <option value="Kinesthetic">Kinesthetic</option>
+                  <option value="Textual">Textual</option>
+                  <option value="Interactive">Interactive</option>
                 </select>
               </div>
 
