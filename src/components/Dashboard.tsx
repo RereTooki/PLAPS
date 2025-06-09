@@ -52,6 +52,8 @@ const Dashboard = () => {
         );
 
         setData(response.data);
+        console.log(response);
+        console.log(response.data.name);
       } catch (err: any) {
         if (axios.isAxiosError(err) && err.response?.status === 404) {
           setData(null);
@@ -93,6 +95,9 @@ const Dashboard = () => {
           >
             Go to Learning Resources
           </Link>
+          <h2 className="text-2xl font-bold mb-4 text-gray-200 sborder-2 w-fit">
+            Hello there{data?.name ? `, ${data.name}` : ""}! 👋
+          </h2>
           <button
             onClick={handleInputClick}
             className="bg-[#94d8df] text-white font-semibold py-2 px-6 rounded-md hover:bg-[#6dc8d2] transition transition ease-in-out duration-500 delay-10 cursor-pointer hover:scale-[1.02]"

@@ -52,7 +52,9 @@ const InputForm = () => {
         {
           course_name: courseName,
           hours_for_lecture: parseInt(lectureHours),
-          learning_type: learningTypeMapping[learningType],
+          learning_type: formData.learningType.split(",").filter(Boolean)
+            .length,
+
           difficulty_level: parseInt(difficultyLevel),
           extracurricular_activities: parseInt(extracurricularHours),
         }
@@ -163,7 +165,7 @@ const InputForm = () => {
                 </select>
               </div>
 
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <label className="text-sm mb-1" htmlFor="learningType">
                   Preferred Learning Type
                 </label>
@@ -180,6 +182,45 @@ const InputForm = () => {
                   <option value="Textual">Textual</option>
                   <option value="Interactive">Interactive</option>
                 </select>
+              </div> */}
+              <div className="flex flex-col">
+                <label className="text-sm mb-1">
+                  Preferred Learning Type{" "}
+                  <span className="text-xs text-gray-400">
+                    (Select one or more)
+                  </span>
+                </label>
+                <div className="flex flex-wrap gap-4">
+                  {["Visual", "Textual", "Interactive"].map((type) => (
+                    <label
+                      key={type}
+                      className="flex items-center gap-2 text-base"
+                    >
+                      <input
+                        type="checkbox"
+                        value={type}
+                        checked={formData.learningType.includes(type)}
+                        onChange={(e) => {
+                          const { checked, value } = e.target;
+                          setFormData((prev) => {
+                            const selected = prev.learningType
+                              .split(",")
+                              .filter(Boolean);
+                            const updated = checked
+                              ? [...selected, value]
+                              : selected.filter((t) => t !== value);
+                            return {
+                              ...prev,
+                              learningType: updated.join(","),
+                            };
+                          });
+                        }}
+                        className="accent-[#94d8df]"
+                      />
+                      {type}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <button
