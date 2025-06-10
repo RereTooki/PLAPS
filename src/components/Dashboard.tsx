@@ -87,24 +87,25 @@ const Dashboard = () => {
             Welcome to your learning optimization center.
           </p>
         </header>
-
-        <div className="flex flex-col lg:flex-row justify-between items-center mb-10 gap-6 lg:gap-0">
-          <Link
-            to="/resources"
-            className="text-[#94d8df] hover:underline font-medium transition ease-in-out duration-500 delay-10 cursor-pointer hover:scale-[1.02]"
-          >
-            Go to Learning Resources
-          </Link>
-          <h2 className="text-2xl font-bold mb-4 text-gray-200 sborder-2 w-fit">
-            Hello there{data?.name ? `, ${data.name}` : ""}! 👋
-          </h2>
-          <button
-            onClick={handleInputClick}
-            className="bg-[#94d8df] text-white font-semibold py-2 px-6 rounded-md hover:bg-[#6dc8d2] transition transition ease-in-out duration-500 delay-10 cursor-pointer hover:scale-[1.02]"
-          >
-            Fill Academic Details
-          </button>
-        </div>
+        {data !== null && (
+          <div className="flex flex-col lg:flex-row justify-between items-center mb-10 gap-6 lg:gap-0">
+            <Link
+              to="/resources"
+              className="text-[#94d8df] hover:underline font-medium transition ease-in-out duration-500 delay-10 cursor-pointer hover:scale-[1.02]"
+            >
+              Go to Learning Resources
+            </Link>
+            <h2 className="text-2xl font-bold mb-4 text-gray-200 sborder-2 w-fit capitalize">
+              Hello there{data?.name ? `, ${data.name}` : ""}! 👋
+            </h2>
+            <button
+              onClick={handleInputClick}
+              className="bg-[#94d8df] text-white font-semibold py-2 px-6 rounded-md hover:bg-[#6dc8d2] transition transition ease-in-out duration-500 delay-10 cursor-pointer hover:scale-[1.02]"
+            >
+              Fill Academic Details
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <p className="text-center text-gray-500">Loading dashboard...</p>
