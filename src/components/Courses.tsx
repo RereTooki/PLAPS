@@ -32,6 +32,7 @@ const Courses = () => {
           `https://subomi-api.onrender.com/courses/${userId}`
         );
         setCourses(response.data);
+        console.log(response.data);
       } catch (err: any) {
         setError("Failed to fetch courses.");
       } finally {
@@ -120,18 +121,26 @@ const Courses = () => {
                         ▶️ View YouTube Links
                       </summary>
                       <ul className="mt-2 list-disc ml-6 text-blue-600 whitespace-pre-line">
-                        {course.youtube_URL.split("\n").map((url, i) => (
-                          <li key={i}>
-                            <a
-                              href={url.trim()}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="underline"
-                            >
-                              {url.trim()}
-                            </a>
-                          </li>
-                        ))}
+                        {course.youtube_URL.split("\n").map((line, i) => {
+                          const match = line
+                            .trim()
+                            .match(/-?\s*(https?:\/\/[^\s]+)\s+\(([^)]+)\)/);
+                          if (!match) return null;
+                          const [_, url, title] = match;
+
+                          return (
+                            <li key={i}>
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline"
+                              >
+                                {title}
+                              </a>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </details>
 
