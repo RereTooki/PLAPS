@@ -17,7 +17,7 @@ const InputForm = () => {
   const learningTypeMapping: Record<string, number> = {
     Visual: 0,
     Textual: 1,
-    Interactive: 2,
+    Interactive: 4,
   };
 
   const handleChange = (
