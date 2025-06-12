@@ -9,16 +9,10 @@ const InputForm = () => {
     lectureHours: "",
     extracurricularHours: "",
     difficultyLevel: "",
-    learningType: "",
+    learningType: [] as string[], // updated to array
   });
 
   const navigate = useNavigate();
-
-  const learningTypeMapping: Record<string, number> = {
-    Visual: 0,
-    Textual: 1,
-    Interactive: 4,
-  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -27,6 +21,36 @@ const InputForm = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const mapLearningTypeToInt = (types: string[]): number => {
+    const sorted = types
+      .map((t) => t.toLowerCase())
+      .sort()
+      .join(" and ");
+    switch (sorted) {
+      case "textual":
+        return 1;
+      case "visual":
+        return 2;
+      case "interactive":
+        return 3;
+      case "textual and visual":
+        return 4;
+      case "textual and interactive":
+        return 5;
+      case "visual and interactive":
+        return 6;
+      case "interactive and textual and visual":
+      case "textual and interactive and visual":
+      case "textual and visual and interactive":
+      case "visual and interactive and textual":
+      case "visual and textual and interactive":
+      case "interactive and visual and textual":
+        return 7;
+      default:
+        return 0;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,14 +71,14 @@ const InputForm = () => {
         learningType,
       } = formData;
 
+      const mappedLearningType = mapLearningTypeToInt(learningType);
+
       await axios.post(
         `https://subomi-api.onrender.com/courses?user_id=${userId}`,
         {
           course_name: courseName,
           hours_for_lecture: parseInt(lectureHours),
-          learning_type: formData.learningType.split(",").filter(Boolean)
-            .length,
-
+          learning_type: mappedLearningType,
           difficulty_level: parseInt(difficultyLevel),
           extracurricular_activities: parseInt(extracurricularHours),
         }
@@ -74,7 +98,7 @@ const InputForm = () => {
         <header className="mb-12 border-b pb-8">
           <h1 className="text-4xl xl:text-5xl font-bold text-center text-[#94d8df] xl:hidden">
             PLAPS - Input Form
-          </h1>{" "}
+          </h1>
           <h1 className="text-4xl xl:text-5xl font-bold text-center text-[#94d8df] hidden xl:block">
             PLAPS - Personalised Learning Academic Predictions System Input Form
           </h1>
@@ -82,6 +106,7 @@ const InputForm = () => {
             Help PLAPS personalize your learning journey.
           </p>
         </header>
+
         <button
           className="mb-8 text-white bg-[#94d8df] px-4 py-2 rounded-md hover:scale-[1.02] transition ease-in-out duration-500 delay-10 cursor-pointer"
           onClick={() => navigate("/dashboard")}
@@ -124,7 +149,7 @@ const InputForm = () => {
                   onChange={handleChange}
                   required
                   className="bg-white text-black rounded-md p-3 text-base"
-                  placeholder="e.g., 10"
+                  placeholder="e.g., 2"
                 />
               </div>
 
@@ -165,24 +190,6 @@ const InputForm = () => {
                 </select>
               </div>
 
-              {/* <div className="flex flex-col">
-                <label className="text-sm mb-1" htmlFor="learningType">
-                  Preferred Learning Type
-                </label>
-                <select
-                  name="learningType"
-                  id="learningType"
-                  value={formData.learningType}
-                  onChange={handleChange}
-                  required
-                  className="bg-white text-black rounded-md p-3 text-base"
-                >
-                  <option value="">Select</option>
-                  <option value="Visual">Visual</option>
-                  <option value="Textual">Textual</option>
-                  <option value="Interactive">Interactive</option>
-                </select>
-              </div> */}
               <div className="flex flex-col">
                 <label className="text-sm mb-1">
                   Preferred Learning Type{" "}
@@ -191,7 +198,7 @@ const InputForm = () => {
                   </span>
                 </label>
                 <div className="flex flex-wrap gap-4">
-                  {["Visual", "Textual", "Interactive"].map((type) => (
+                  {["textual", "visual", "interactive"].map((type) => (
                     <label
                       key={type}
                       className="flex items-center gap-2 text-base"
@@ -203,21 +210,18 @@ const InputForm = () => {
                         onChange={(e) => {
                           const { checked, value } = e.target;
                           setFormData((prev) => {
-                            const selected = prev.learningType
-                              .split(",")
-                              .filter(Boolean);
                             const updated = checked
-                              ? [...selected, value]
-                              : selected.filter((t) => t !== value);
+                              ? [...prev.learningType, value]
+                              : prev.learningType.filter((t) => t !== value);
                             return {
                               ...prev,
-                              learningType: updated.join(","),
+                              learningType: updated,
                             };
                           });
                         }}
                         className="accent-[#94d8df]"
                       />
-                      {type}
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
                     </label>
                   ))}
                 </div>
@@ -232,7 +236,8 @@ const InputForm = () => {
             </form>
           </div>
         </div>
-        <footer className="text-center text-sm  transition ease-in-out duration-500 delay-10 cursor-pointer hover:scale-[1.02] fixed bottom-2 lg:bottom-4 text-white ">
+
+        <footer className="text-center text-sm transition ease-in-out duration-500 delay-10 cursor-pointer hover:scale-[1.02] fixed bottom-2 lg:bottom-4 text-white">
           © 2025{" "}
           <a
             href="https://www.linkedin.com/in/rerel-oluwa-tooki-cnvp-b53396253/"
