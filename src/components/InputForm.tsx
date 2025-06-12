@@ -72,6 +72,7 @@ const InputForm = () => {
       } = formData;
 
       const mappedLearningType = mapLearningTypeToInt(learningType);
+      console.log("Mapped learning_type to be sent:", mappedLearningType); // 👈 Debug log
 
       await axios.post(
         `https://subomi-api.onrender.com/courses?user_id=${userId}`,
