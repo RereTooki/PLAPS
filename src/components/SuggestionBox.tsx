@@ -12,23 +12,39 @@ const SuggestionBox = ({ advice }: SuggestionBoxProps) => {
     );
   }
 
-  // Split the advice string into meaningful blocks
-  const aiAnalysis = advice
-    .match(/\[AI Analysis\]:([\s\S]*?)\[|$/)?.[1]
-    ?.trim();
-  const learningStyleBlock = advice
-    .match(/\[Learning Style-Based Recommendations\]:([\s\S]*)/)?.[1]
+  const aiAnalysisMatch = advice.match(
+    /\[AI Analysis\]:([\s\S]*?)\[Learning Style-Based Recommendations]/
+  );
+  const aiAnalysis = aiAnalysisMatch?.[1]?.trim();
+
+  const aiSummary = aiAnalysis?.match(
+    /Based on your inputs, your predicted score in this course is [^.\n]*/
+  )?.[0];
+
+  const learningStyleIntroMatch = advice.match(
+    /\[Learning Style-Based Recommendations\]:\s*(.*)/
+  );
+  const learningStyleIntro = learningStyleIntroMatch?.[1]
+    ?.split("Textbooks:")[0]
     ?.trim();
 
-  // Further extract parts inside the learning style block
-  const textbooks = learningStyleBlock
-    ?.match(/Textbooks:\s*([\s\S]*?)YouTube Videos:/)?.[1]
+  const suggestedType = aiAnalysis
+    ?.match(/Suggested Learning Type.*?:\s*(.*?)(?:\.\s|$)/i)?.[1]
+    ?.trim();
+  const weeklyHours = aiAnalysis?.match(
+    /studying this course for approximately\s*(\d+\.?\d*)\s*hours?/i
+  )?.[1];
+
+  const textbooksBlock = advice.match(
+    /Textbooks:\s*([\s\S]*?)YouTube Videos:/
+  )?.[1];
+  const textbooks = textbooksBlock
     ?.split("\n")
     .map((line) => line.replace(/^\s*-\s*/, "").trim())
     .filter(Boolean);
 
-  const videos = learningStyleBlock
-    ?.match(/YouTube Videos:\s*([\s\S]*)/)?.[1]
+  const videoBlock = advice.match(/YouTube Videos:\s*([\s\S]*)/)?.[1];
+  const videos = videoBlock
     ?.split("\n")
     .map((line) => {
       const match = line.match(/-\s*(https?:\/\/\S+)\s*\((.*?)\)/);
@@ -38,25 +54,52 @@ const SuggestionBox = ({ advice }: SuggestionBoxProps) => {
 
   return (
     <div className="bg-neutral-800 p-6 rounded-lg shadow-lg max-h-[70vh] overflow-y-scroll">
-      <h2 className="text-xl font-semibold mb-4 text-white">
+      <h2 className="text-xl font-semibold mb-6 text-white">
         💡 Personalized Advice
       </h2>
 
-      {aiAnalysis && (
-        <div className="mb-6">
+      {aiSummary && (
+        <div className="mb-8">
           <h3 className="text-lg font-semibold text-[#94d8df] mb-2">
             🧠 AI Analysis
           </h3>
-          <p className="text-gray-300 whitespace-pre-line">{aiAnalysis}</p>
+          <p className="text-gray-300">{aiSummary}</p>
+        </div>
+      )}
+
+      {suggestedType && (
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-[#94d8df] mb-2">
+            📌 Suggested Learning Type
+          </h3>
+          <p className="text-gray-300">{suggestedType}</p>
+        </div>
+      )}
+
+      {weeklyHours && (
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-[#94d8df] mb-2">
+            ⏱️ Weekly Study Hours
+          </h3>
+          <p className="text-gray-300">{weeklyHours} hrs/week</p>
+        </div>
+      )}
+
+      {learningStyleIntro && (
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-[#94d8df] mb-2">
+            🔍 Learning Style-Based Recommendations
+          </h3>
+          <p className="text-gray-300">{learningStyleIntro}</p>
         </div>
       )}
 
       {textbooks && textbooks.length > 0 && (
-        <div className="mb-6">
+        <div className="mb-8">
           <h3 className="text-lg font-semibold text-[#94d8df] mb-2">
-            📚 Recommended Textbooks
+            📚 Textbooks
           </h3>
-          <ul className="list-disc list-inside text-gray-300 space-y-1">
+          <ul className="list-disc list-inside text-gray-300 space-y-2">
             {textbooks.map((book, idx) => (
               <li key={idx}>{book}</li>
             ))}
@@ -65,11 +108,11 @@ const SuggestionBox = ({ advice }: SuggestionBoxProps) => {
       )}
 
       {videos && videos.length > 0 && (
-        <div>
+        <div className="mb-2">
           <h3 className="text-lg font-semibold text-[#94d8df] mb-2">
             🎥 YouTube Videos
           </h3>
-          <ul className="list-disc list-inside text-blue-400 space-y-1">
+          <ul className="list-disc list-inside text-blue-400 space-y-2">
             {videos.map((video, idx) => (
               <li key={idx}>
                 <a
