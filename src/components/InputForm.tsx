@@ -24,33 +24,22 @@ const InputForm = () => {
   };
 
   const mapLearningTypeToInt = (types: string[]): number => {
-    const sorted = types
+    const key = types
       .map((t) => t.toLowerCase())
       .sort()
-      .join(" and ");
-    switch (sorted) {
-      case "textual":
-        return 1;
-      case "visual":
-        return 2;
-      case "interactive":
-        return 3;
-      case "textual and visual":
-        return 4;
-      case "textual and interactive":
-        return 5;
-      case "visual and interactive":
-        return 6;
-      case "interactive and textual and visual":
-      case "textual and interactive and visual":
-      case "textual and visual and interactive":
-      case "visual and interactive and textual":
-      case "visual and textual and interactive":
-      case "interactive and visual and textual":
-        return 7;
-      default:
-        return 0;
-    }
+      .join(",");
+
+    const mapping: Record<string, number> = {
+      textual: 1,
+      visual: 2,
+      interactive: 3,
+      "textual,visual": 4,
+      "interactive,textual": 5,
+      "interactive,visual": 6,
+      "interactive,textual,visual": 7,
+    };
+
+    return mapping[key] ?? 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,7 +61,7 @@ const InputForm = () => {
       } = formData;
 
       const mappedLearningType = mapLearningTypeToInt(learningType);
-      console.log("Mapped learning_type to be sent:", mappedLearningType); // 👈 Debug log
+      console.log("Mapped learning_type to be sent:", mappedLearningType);
 
       await axios.post(
         `https://subomi-api.onrender.com/courses?user_id=${userId}`,
