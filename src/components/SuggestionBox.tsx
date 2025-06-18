@@ -12,38 +12,46 @@ const SuggestionBox = ({ advice }: SuggestionBoxProps) => {
     );
   }
 
+  // Extract AI Summary
   const aiAnalysisMatch = advice.match(
-    /\[AI Analysis\]:([\s\S]*?)\[Learning Style-Based Recommendations]/
+    /\[AI Analysis\]:([\s\S]*?)\[Learning Style-Based Recommendations]/i
   );
   const aiAnalysis = aiAnalysisMatch?.[1]?.trim();
 
   const aiSummary = aiAnalysis?.match(
-    /Based on your inputs, your predicted score in this course is [^.\n]*/
+    /Based on your inputs, your predicted score in this course is [^.\n]*/i
   )?.[0];
 
+  // Extract Learning Style Block
   const learningStyleIntroMatch = advice.match(
-    /\[Learning Style-Based Recommendations\]:\s*(.*)/
+    /\[Learning Style-Based Recommendations\]:\s*([\s\S]*)/i
   );
-  const learningStyleIntro = learningStyleIntroMatch?.[1]
-    ?.split("Textbooks:")[0]
-    ?.trim();
+  const learningStyleSection = learningStyleIntroMatch?.[1]?.trim();
 
+  // Get Suggested Learning Type
   const suggestedType = aiAnalysis
     ?.match(/Suggested Learning Type.*?:\s*(.*?)(?:\.\s|$)/i)?.[1]
     ?.trim();
+
+  // Get Weekly Study Hours
   const weeklyHours = aiAnalysis?.match(
     /studying this course for approximately\s*(\d+\.?\d*)\s*hours?/i
   )?.[1];
 
-  const textbooksBlock = advice.match(
-    /Textbooks:\s*([\s\S]*?)YouTube Videos:/
-  )?.[1];
+  // Get Textbooks from Learning Style Section
+  const textbooksBlock = learningStyleSection
+    ?.split(/textbooks:\s*/i)?.[1]
+    ?.split(/youtube videos:/i)?.[0]
+    ?.trim();
+
   const textbooks = textbooksBlock
     ?.split("\n")
-    .map((line) => line.replace(/^\s*-\s*/, "").trim())
+    .map((line) => line.replace(/^\s*[-•]?\s*/, "").trim())
     .filter(Boolean);
 
-  const videoBlock = advice.match(/YouTube Videos:\s*([\s\S]*)/)?.[1];
+  // Get Videos from Learning Style Section
+  const videoBlock = learningStyleSection?.split(/youtube videos:/i)?.[1];
+
   const videos = videoBlock
     ?.split("\n")
     .map((line) => {
@@ -53,7 +61,7 @@ const SuggestionBox = ({ advice }: SuggestionBoxProps) => {
     .filter((item): item is { url: string; title: string } => !!item);
 
   return (
-    <div className="bg-neutral-800 p-6 rounded-lg shadow-lg max-h-[70vh] overflow-y-scroll">
+    <div className="bg-neutral-800 p-6 rounded-lg shadow-lg max-h-[70vh] overflow-y-auto">
       <h2 className="text-xl font-semibold mb-6 text-white">
         💡 Personalized Advice
       </h2>
@@ -85,12 +93,14 @@ const SuggestionBox = ({ advice }: SuggestionBoxProps) => {
         </div>
       )}
 
-      {learningStyleIntro && (
+      {learningStyleSection && (
         <div className="mb-8">
           <h3 className="text-lg font-semibold text-[#94d8df] mb-2">
             🔍 Learning Style-Based Recommendations
           </h3>
-          <p className="text-gray-300">{learningStyleIntro}</p>
+          <p className="text-gray-300">
+            {learningStyleSection.split(/textbooks:/i)[0]?.trim()}
+          </p>
         </div>
       )}
 
